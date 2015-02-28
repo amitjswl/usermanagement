@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script type="text/javascript">
+
+
+function demo($scope)
+{
+	$scope.init=function{
+	
+	var response=$http.post('users/roles',jsondata).
+	  success(function(data, status, headers, config) {
+		  alert("successful request");
+		  $scope.response=data;
+	    // this callback will be called asynchronously
+	    // when the response is available
+	  }).
+	  error(function(data, status, headers, config) {
+		  
+		  alert("failed request");
+	    // called asynchronously if an error occurs
+	    // or server returns response with an error status.
+	  });	
+	
+	}
+	
+}
+
+
+
+</script>
+</head>
+<body>
+<div ng-app="" ng-contoller="demo">
+{{ response }}
+<select ng-model="selectedTestAccount" ng-init="init()"  ng-options="item.Id as item.Name for item in response">
+    <option value="">Select Account</option>
+</select>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<html>
+<head>
+    <title>LIGHTBOX EXAMPLE</title>
+    <style>
+    .black_overlay{
+        display: none;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index:1001;
+        -moz-opacity: 0.8;
+        opacity:.80;
+        filter: alpha(opacity=80);
+    }
+    .white_content {
+        display: none;
+        position: absolute;
+        top: 25%;
+        left: 25%;
+        width: 50%;
+        height: 50%;
+        padding: 16px;
+        border: 16px solid orange;
+        background-color: white;
+        z-index:1002;
+        overflow: auto;
+    }
+    .right {
+    text-align: right;
+    float: right;
+}
+ a{
+ float:right;
+  font: bold 18px Arial;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333388;
+  padding: 2px 6px 2px 6px;
+  border-top: 2px solid #CCCCCC;
+  border-right: 2px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+   
+   div{
+   float:left;
+   }
+   
+   button{
+  
+  display: inline-block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  width: 65px;
+  cursor: pointer;
+  margin: 1px;
+  padding: 10px 20px;
+  border: 1px solid #018dc4;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  font: normal 16px/normal "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  color: rgba(255,255,255,0.9);
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  background: -webkit-linear-gradient(-90deg, rgba(190,145,242,1) 0, rgba(124,188,10,1) 100%);
+  background: -moz-linear-gradient(180deg, rgba(190,145,242,1) 0, rgba(124,188,10,1) 100%);
+  background: linear-gradient(180deg, rgba(190,145,242,1) 0, rgba(124,188,10,1) 100%);
+  background-position: 50% 50%;
+  -webkit-background-origin: padding-box;
+  background-origin: padding-box;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-background-size: auto auto;
+  background-size: auto auto;
+  -webkit-box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) ;
+  box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) ;
+  text-shadow: -1px -1px 0 rgba(15,73,168,0.66) ;
+  -webkit-transform: rotateX(15deg)   ;
+  transform: rotateX(15deg)   ;
+}
+   }
+    
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+
+<script>
+	
+	var count=0;
+	
+	function createJSONMetaData(){
+		var key="";
+		var id="";
+		var generatedJSON='{ ';
+		key=document.getElementById("updateMetaData").value;
+		id=document.getElementById("updateMetaData").value;
+		generatedJSON+='"uid":"'+key+'"';
+		for( i=0;i< count; i++)
+			{
+			
+			key=document.getElementById("key"+i).value;
+			val=document.getElementById("value"+i).value;
+			generatedJSON=generatedJSON+',"'+key+'":"'+val+'"';
+			
+			}
+		generatedJSON=generatedJSON+'}';
+		alert(generatedJSON);
+		var	xmlHTTP= new XMLHttpRequest();
+		xmlHTTP.onreadystatechange = function() {
+		    if (xmlHTTP.readyState==4) {
+		        alert(xmlHTTP.responseText);
+		        document.getElementById("outputdiv").innerHTML=xmlHTTP.responseText;
+		    } }
+		var url="users/update/"+id;
+		alert(url);
+		xmlHTTP.open("POST",url,true);
+		xmlHTTP.setRequestHeader("content-type","application/json");
+		xmlHTTP.send(generatedJSON);
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	function formController($scope,$http){
+		
+		//var jsondata= $scope.user;
+		
+		
+		$scope.angSubmit=function(){
+			var jsondata= $scope.user;
+			jsondata=JSON.stringify(jsondata);
+			alert(jsondata);
+			
+			var response=$http.post('users/add',jsondata).
+			  success(function(data, status, headers, config) {
+				  alert("successful request");
+			    // this callback will be called asynchronously
+			    // when the response is available
+			  }).
+			  error(function(data, status, headers, config) {
+				  
+				  alert("failed request");
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });	
+			
+			}
+	}
+	
+	
+function deleteController($scope,$http){
+		
+		//var jsondata= $scope.user;
+		
+		
+		$scope.delUser=function(){
+			var iddata= $scope.deluid;
+			
+			alert(iddata);
+			var response=$http.get('users/delete'+iddata).
+			  success(function(data, status, headers, config) {
+				  alert("successful request");
+			    // this callback will be called asynchronously
+			    // when the response is available
+			  }).
+			  error(function(data, status, headers, config) {
+				  
+				  alert("failed request");
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });	
+			
+			  
+			
+			}
+	}
+	
+	
+	
+	function addRow(){
+		
+		
+		var divv=document.createElement('div');
+		divv.innerHTML="<input type='text' id='key"+count+"' />&nbsp&nbsp <input type='text' id='value"+count+"' />"
+		document.getElementById("UserMetaData").appendChild(divv);
+		count++;
+	}
+	
+	
+	function deleteUser(){
+		var id=document.getElementById("deluid").value;
+		var	xmlHTTP= new XMLHttpRequest();
+		xmlHTTP.onreadystatechange = function() {
+		    if (xmlHTTP.readyState==4) {
+		        alert(xmlHTTP.responseText);
+		        document.getElementById("outputdiv").innerHTML=xmlHTTP.responseText;
+		    } }
+		var url="users/id/"+id;
+		alert(url);
+		xmlHTTP.open("DELETE",url,true);
+		xmlHTTP.send();
+		
+	}
+	
+	
+	//new function starts
+	
+	function saveRole(){
+		var role=document.getElementById("toAddRole").value;
+		var	xmlHTTP= new XMLHttpRequest();
+		xmlHTTP.onreadystatechange = function() {
+		    if (xmlHTTP.readyState==4) {
+		        alert(xmlHTTP.responseText);
+		        document.getElementById("outputdiv").innerHTML=xmlHTTP.responseText;
+		    } }
+		var url="users/roles/"+role;
+		alert(url);
+		xmlHTTP.open("PUT",url,true);
+		xmlHTTP.send();
+		
+	}
+	
+	
+	
+	</script>
+
+</head>
+<body>
+     <div ng-app="" ng-controller="formController">
+      <h2> Add a user to the dataBase</h2>
+
+<form  method="post" action="users/add" >
+	User ID <input type="number" ng-model="user.uid" id="uid" name="uid" maxlength=25><p>
+	First Name <input type="text" ng-model="user.fname" id="fname" name="fname" maxlength=25><p>
+	Last Name  <input type="text" id="lname" ng-model="user.lname" name="lname" maxlength=25><p>
+	E-mail    <input type="text" id="email" ng-model="user.email" name="email" maxlength=25><p>
+	DOB      <input type="text" id="dob" name="dob" ng-model="user.dob" ><p>
+	Role <select id="role" name='role' ng-model="user.role">
+  <option value="Intern"ng-model="user.role">intern</option>
+  <option value="developer" ng-model="user.role">Saabdeveloper</option>
+  <option value="test role" ng-model="user.role">test role</option>
+</select><p>
+<input type="button" value="AngularJS" ng-click="angSubmit()"> 
+</form>
+<div>Generated json data is {{ user }} </div>
+<div>Recieved json data is {{ response }} </div>
+<div id="outputdiv" ></div>
+
+</div>
+      </div>
+   
+
+   
+ <!--    <p> To ADD a User click <a href = "javascript:void(0)" onclick = "document.getElementById('light0').style.display='block';document.getElementById('fade').style.display='block'">here</a></p>
+   -->
+    <p>METADATA <a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">ADD METADATA</a></p>
+   
+  
+   
+   <p>MANAGE ROLES  <a href = "javascript:void(0)" onclick = "document.getElementById('light1').style.display='block';document.getElementById('fade').style.display='block'">MANAGE ROLES</a></p>
+
+    <p><a href = "javascript:void(0)" onclick = "document.getElementById('light2').style.display='block';document.getElementById('fade').style.display='block'">DELETE A USER
+    
+    </div>
+    
+    
+    
+    
+    
+    <div id="light" class="white_content" ng-app="" ng-controller="formController"><div class="right"><a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a></div><h3>Add a metaData for User</h3> 
+   <p>User ID <input type="text" id="updateMetaData" /></p>
+    <div ng-app="" ng-controller="formController" id="UserMetaData">
+    <!-- this place holds the dynamically generated input boxes -->
+    </div>
+     <input type="button" value="Add Field" onclick="addRow()" />
+    
+    <input type="button" onclick="createJSONMetaData()" value="save MetaData" />
+    </div>
+  
+    </div>
+    
+     <div id="light1" class="white_content" ng-app="" ng-controller="formController"><div class="right"><a href = "javascript:void(0)" onclick = "document.getElementById('light1').style.display='none';document.getElementById('fade').style.display='none'">Close</a></div><h3>Add a metaData for User</h3> 
+    
+    <div ng-app="" ng-controller="formController" id="UserMetaData">
+    Add a Role
+    <p>New Role <input type="text" id="toAddRole" /> 
+    <input type="button" value="Save Role"  onclick="saveRole()"/>
+    </div>
+     
+    </div>
+  
+    </div>
+    
+    
+    <div id="light2" class="white_content" ><div class="right"><a href = "javascript:void(0)" onclick = "document.getElementById('light2').style.display='none';document.getElementById('fade').style.display='none'">Close</a></div><h3>DELETING a  User</h3> 
+    
+    <div  id="UserMetaData" ng-app="" ng-controller="deleteController">
+    Delete a User
+    <p>User ID  <input type="text"  id="deluid"  ng-model="deluid"  /> 
+    <input type="button" value="Delete User !"    onclick="deleteUser()"/>
+    </div>
+     
+    </div>
+    
+    
+    <div id="light0" class="white_content" ng-app="" ng-controller="formController"><div class="right"><a href = "javascript:void(0)" onclick = "document.getElementById('light0').style.display='none';document.getElementById('fade').style.display='none'">Close</a></div><h3> ADD a User</h3> 
+        
+    </div>
+    </div>
+    
+    
+    
+    <div id="fade" class="black_overlay"></div>
+    
+    
+
+    
+</body>

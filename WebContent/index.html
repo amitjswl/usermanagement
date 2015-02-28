@@ -1,0 +1,98 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Add a User</title>
+<link rel="stylesheet" type="text/css" media="all" href="NewFile.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script>
+	
+	function sendRequest()
+	{
+		alert("function called");
+		var uid=document.getElementById('uid').value;
+		var fname=document.getElementById('fname').value;
+		var lname=document.getElementById('lname').value;
+		var email=document.getElementById('email').value;
+		var dob=document.getElementById('dob').value;
+		var role=document.getElementById('role').value;
+		var metadata=document.getElementById('metadata').value;
+		
+		
+		alert("uid="+uid+"&fname="+fname+"&lname="+lname+"&email="+email+"&dob="+dob+"&role="+role+"&metadata="+metadata);
+		 
+		// hhere we frame a request by xmlhttprequest method for our restt api
+		
+	var	xmlHTTP= new XMLHttpRequest();
+		
+		xmlHTTP.onreadystatechange = function() {
+		    if (xmlHTTP.readyState==4) {
+		        alert(xmlHTTP.responseText);
+		        document.getElementById("outputdiv").innerHTML=xmlHTTP.responseText;
+		    } }
+		var url="users/add";
+		xmlHTTP.open("POST",url,true);
+		xmlHTTP.setRequestHeader("content-type","application/x-www-form-urlencoded");
+		xmlHTTP.send("uid="+uid+"&fname="+fname+"&lname="+lname+"&email="+email+"&dob="+dob+"&role="+role);
+		
+		
+	}
+	
+	function formController($scope,$http){
+		
+		//var jsondata= $scope.user;
+		
+		
+		$scope.angSubmit=function(){
+			var jsondata= $scope.user;
+			jsondata=JSON.stringify(jsondata);
+			alert(jsondata);
+			
+			var response=$http.post('users/add',jsondata).
+			  success(function(data, status, headers, config) {
+				  alert("successful request");
+				  $scope.response=data;
+			    // this callback will be called asynchronously
+			    // when the response is available
+			  }).
+			  error(function(data, status, headers, config) {
+				  
+				  alert("failed request");
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });	
+			}
+	}
+	
+	
+	</script>
+
+
+</head>
+<body>
+<h2> Add a user to the dataBase</h2>
+<div ng-app="" ng-controller="formController">
+<form  method="post" action="users/add" >
+	User ID <input type="number" ng-model="user.uid" id="uid" name="uid" maxlength=25><p>
+	First Name <input type="text" ng-model="user.fname" id="fname" name="fname" maxlength=25><p>
+	Last Name  <input type="text" id="lname" ng-model="user.lname" name="lname" maxlength=25><p>
+	E-mail    <input type="text" id="email" ng-model="user.email" name="email" maxlength=25><p>
+	DOB      <input type="text" id="dob" name="dob" ng-model="user.dob" ><p>
+	Role <select id="role" name='role' ng-model="user.role">
+  <option value="Intern"ng-model="user.role">intern</option>
+  <option value="developer" ng-model="user.role">Saabdeveloper</option>
+  <option value="test role" ng-model="user.role">test role</option>
+  <option value="no role" ng-model="user.role">no role</option>
+</select><p>
+<input type="text" name="metadata" id="metadata" ng-model="user.metadata" maxlength="254"  > 
+<input type="button" value="javascript" onclick="sendRequest()" />
+<input type="button" value="AddUser"> 
+<input type="button" value="AngularJS" ng-click="angSubmit()"> 
+</form>
+<div id="outputdiv" ></div>
+<div>Generated json data is {{ user }} </div>
+<div>Recieved json data is {{ response }} </div>
+</div>
+</body>
+</html>
